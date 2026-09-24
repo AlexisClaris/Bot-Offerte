@@ -1,35 +1,35 @@
 """
-Bot Telegram per l'invio automatico di offerte prodotto.
-Pensato per essere eseguito da GitHub Actions: invia tutti i prodotti
-in una volta e poi termina (nessun loop infinito).
+Bot Telegram per l'invio automatico di offerte prodotto Amazon.
+Eseguito da GitHub Actions ogni 10 minuti: invia tutti i prodotti
+della lista e poi termina.
 """
 
 import os
 import requests
 
-# Token e Chat ID vengono letti dai Secrets di GitHub, non scritti qui
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 CHAT_ID = os.environ["CHAT_ID"]
 
-# Lista di prova con 3 prodotti (modificali o aggiungine altri)
+# ⚠️ Sostituisci "link" con il TUO link affiliato Amazon generato
+# tramite SiteStripe (deve contenere il tuo tag, es. ?tag=iltuotag-21)
 PRODOTTI = [
     {
         "nome": "Cuffie Bluetooth Wireless",
         "prezzo_originale": 49.90,
         "prezzo_scontato": 29.90,
-        "link": "https://esempio.com/cuffie",
+        "link": "https://www.amazon.it/dp/ESEMPIO1?tag=iltuotag-21",
     },
     {
         "nome": "Smartwatch Fitness Tracker",
         "prezzo_originale": 79.99,
         "prezzo_scontato": 39.99,
-        "link": "https://esempio.com/smartwatch",
+        "link": "https://www.amazon.it/dp/ESEMPIO2?tag=iltuotag-21",
     },
     {
         "nome": "Power Bank 20000mAh",
         "prezzo_originale": 34.90,
         "prezzo_scontato": 19.90,
-        "link": "https://esempio.com/powerbank",
+        "link": "https://www.amazon.it/dp/ESEMPIO3?tag=iltuotag-21",
     },
 ]
 
