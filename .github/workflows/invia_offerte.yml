@@ -1,0 +1,27 @@
+name: Invia offerte Telegram
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # ogni ora, al minuto 0
+  workflow_dispatch:        # ti permette di avviarlo anche a mano, per testare
+
+jobs:
+  invia:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scarica il codice
+        uses: actions/checkout@v4
+
+      - name: Imposta Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installa le dipendenze
+        run: pip install requests
+
+      - name: Esegui lo script
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python bot_offerte.py
