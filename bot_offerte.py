@@ -14,22 +14,22 @@ CHAT_ID = os.environ["CHAT_ID"]
 # tramite SiteStripe (deve contenere il tuo tag, es. ?tag=iltuotag-21)
 PRODOTTI = [
     {
-        "nome": "Cuffie Bluetooth Wireless",
-        "prezzo_originale": 49.90,
-        "prezzo_scontato": 29.90,
-        "link": "https://www.amazon.it/dp/ESEMPIO1?tag=iltuotag-21",
+        "nome": "PATONA Batteria J-S1 1400mAh per BlackBerry Curve 9320 9720",
+        "prezzo_originale": 15.50,
+        "prezzo_scontato": 11.95,
+        "link": "https://amzn.to/4xKnOL4",
     },
     {
-        "nome": "Smartwatch Fitness Tracker",
-        "prezzo_originale": 79.99,
-        "prezzo_scontato": 39.99,
-        "link": "https://www.amazon.it/dp/ESEMPIO2?tag=iltuotag-21",
+        "nome": "NIVEA SUN Protect & Hydrate SPF 30 Formato Viaggio 100 ml",
+        "prezzo_originale": 7.99,
+        "prezzo_scontato": 5.68,
+        "link": "https://amzn.to/4Aw7b8r",
     },
     {
-        "nome": "Power Bank 20000mAh",
+        "nome": "Amazon Basics Filtri per acqua, adatto e compatibile con tutte le caraffe BRITA, incluse le PerfectFit, 6 unità, confezione da 1",
         "prezzo_originale": 34.90,
-        "prezzo_scontato": 19.90,
-        "link": "https://www.amazon.it/dp/ESEMPIO3?tag=iltuotag-21",
+        "prezzo_scontato": 19.84,
+        "link": "https://amzn.to/4hgp1DC",
     },
 ]
 
