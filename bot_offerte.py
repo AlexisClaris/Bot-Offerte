@@ -224,32 +224,36 @@ def pubblica(token, canale, offerta, link, adesso):
     )
 
 
-def gestisci(messaggio, cfg):
-    """Gestisce un messaggio privato. Restituisce il testo da rispondere, o None."""
+def valuta(messaggio, cfg):
+    """Capisce un messaggio privato senza pubblicare niente.
+    Restituisce ("risposta", testo o None) oppure ("offerta", (offerta, link, avviso))."""
     chat = messaggio["chat"]
     if chat.get("type") != "private":
-        return None
+        return "risposta", None
     mittente = str(messaggio.get("from", {}).get("id", ""))
     testo = (messaggio.get("text") or messaggio.get("caption") or "").strip()
 
     if testo.startswith(("/id", "/start")):
-        return f"Il tuo ID Telegram è {mittente}.\n\n{AIUTO}"
+        return "risposta", f"Il tuo ID Telegram è {mittente}.\n\n{AIUTO}"
     if not cfg["proprietario"] or mittente != cfg["proprietario"]:
-        return None
+        return "risposta", None
     if testo.startswith("/"):
-        return AIUTO
+        return "risposta", AIUTO
     if not cfg["tag"]:
-        return "Manca il tag di affiliazione (AMAZON_TAG) nei Secrets di GitHub."
+        return "risposta", "Manca il tag di affiliazione (AMAZON_TAG) nei Secrets di GitHub."
 
     try:
         offerta = leggi_offerta(testo)
         link, avviso = link_affiliato(offerta["link"], cfg["tag"])
     except ErroreOfferta as errore:
-        return f"❌ Non pubblicata. {errore}"
+        return "risposta", f"❌ Non pubblicata. {errore}"
+    return "offerta", (offerta, link, avviso)
 
-    pubblica(cfg["token"], cfg["canale"], offerta, link, datetime.now(ZoneInfo("Europe/Rome")))
-    print(f"Pubblicata: {offerta['titolo']}")
-    return "✅ Pubblicata." + (f"\n⚠️ {avviso}" if avviso else "")
+
+def finestra_di_pubblicazione():
+    """Vero solo nei primi 10 minuti di ogni mezz'ora (ora italiana).
+    Il bot gira ogni 10 minuti, quindi pubblica una sola offerta ogni 30."""
+    return datetime.now(ZoneInfo("Europe/Rome")).minute % 30 < 10
 
 
 def main():
@@ -259,7 +263,10 @@ def main():
         "proprietario": os.environ.get("OWNER_ID", "").strip(),
         "tag": os.environ.get("AMAZON_TAG", "").strip(),
     }
-    prossimo, errori = None, 0
+    # FORZA=true (bottone "Run workflow"): pubblica subito tutte le offerte in coda.
+    forza = os.environ.get("FORZA", "").strip().lower() == "true"
+    puo_pubblicare = forza or finestra_di_pubblicazione()
+    pubblicate, prossimo, errori = 0, None, 0
     while True:
         # Un messaggio alla volta: chiedere il successivo conferma il precedente,
         # così la stessa offerta non viene mai pubblicata due volte.
@@ -275,7 +282,18 @@ def main():
         if not messaggio:
             continue
         try:
-            risposta = gestisci(messaggio, cfg)
+            tipo, dati = valuta(messaggio, cfg)
+            if tipo == "offerta":
+                if not forza and (not puo_pubblicare or pubblicate >= 1):
+                    break  # non confermata: resta in coda per il prossimo turno
+                offerta, link, avviso = dati
+                pubblica(cfg["token"], cfg["canale"], offerta, link,
+                         datetime.now(ZoneInfo("Europe/Rome")))
+                pubblicate += 1
+                print(f"Pubblicata: {offerta['titolo']}")
+                risposta = "✅ Pubblicata." + (f"\n⚠️ {avviso}" if avviso else "")
+            else:
+                risposta = dati
         except Exception as errore:
             errori += 1
             print(f"Errore: {errore}")
@@ -305,4 +323,3 @@ def prova():
 
 if __name__ == "__main__":
     prova() if "--prova" in sys.argv else main()
-

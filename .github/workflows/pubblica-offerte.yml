@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '*/10 * * * *'   # ogni 10 minuti (GitHub può ritardare di qualche minuto)
   workflow_dispatch:          # bottone "Run workflow" per lanciarlo a mano
+    inputs:
+      subito:
+        description: "Pubblica subito tutte le offerte in coda (senza aspettare i 30 minuti)"
+        type: boolean
+        default: true
 
 concurrency:
   group: pubblica-offerte
@@ -28,4 +33,5 @@ jobs:
           CHAT_ID: ${{ secrets.CHAT_ID }}
           OWNER_ID: ${{ secrets.OWNER_ID }}
           AMAZON_TAG: ${{ secrets.AMAZON_TAG }}
+          FORZA: ${{ inputs.subito }}
         run: python bot_offerte.py
