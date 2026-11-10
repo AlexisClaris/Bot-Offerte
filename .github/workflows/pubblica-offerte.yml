@@ -1,0 +1,31 @@
+name: Pubblica offerte Telegram
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # ogni 10 minuti (GitHub può ritardare di qualche minuto)
+  workflow_dispatch:          # bottone "Run workflow" per lanciarlo a mano
+
+concurrency:
+  group: pubblica-offerte
+  cancel-in-progress: false
+
+jobs:
+  pubblica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Scarica il codice
+        uses: actions/checkout@v4
+
+      - name: Imposta Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Pubblica le offerte nuove
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          OWNER_ID: ${{ secrets.OWNER_ID }}
+          AMAZON_TAG: ${{ secrets.AMAZON_TAG }}
+        run: python bot_offerte.py
