@@ -37,7 +37,7 @@ Anker Prime 250W Caricatore USB C GaN a 6 Porte
 
 Il bot controlla la chat ogni 10 minuti e pubblica **una sola offerta ogni 30 minuti**
 (nei primi 10 minuti di ogni mezz'ora, ora italiana). Le altre aspettano in coda e, quando
-escono, ti risponde `✅ Pubblicata.`. Se l'offerta è scritta male ti risponde subito con
+escono, ti risponde `Pubblicato ✅ / nome del prodotto`. Se l'offerta è scritta male ti risponde subito con
 `❌` e cosa correggere.
 
 - Telegram conserva i messaggi in coda per 24 ore: non mandarne più di una quarantina alla volta.

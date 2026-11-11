@@ -291,7 +291,7 @@ def main():
                          datetime.now(ZoneInfo("Europe/Rome")))
                 pubblicate += 1
                 print(f"Pubblicata: {offerta['titolo']}")
-                risposta = "✅ Pubblicata." + (f"\n⚠️ {avviso}" if avviso else "")
+                risposta = f"Pubblicato ✅ / {offerta['titolo']}" + (f"\n⚠️ {avviso}" if avviso else "")
             else:
                 risposta = dati
         except Exception as errore:
